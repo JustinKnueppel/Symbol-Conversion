@@ -12,9 +12,9 @@ def to_unicode(code: int) -> str:
     @return
         the unicode symbol corresponding to @code
     """
-    MIN = 0
-    MAX = 16^4 - 1
-    assert 0 <= code <= MAX: "Number out of range"
+    min = 0
+    max = 16^4 - 1
+    #assert min <= code <= max, "Number out of range"
 
     return chr(code)
 
@@ -46,8 +46,16 @@ def substitute(text: str, conversions: dict) -> str:
     return text
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     with open('conversions.json', 'r') as f:
         conversions = json.load(f)
 
+    replace = {flag: to_unicode(to_int(code)) for flag, code in conversions.items()}
 
+    if len(sys.argv) < 2:
+        raise ArgumentError("Please enter a file name")
+    elif len(sys.argv) == 2:
+        with open(sys.argv[1]) as f:
+            text = ''.join(f.readlines())
+
+        print(substitute(text, replace))
